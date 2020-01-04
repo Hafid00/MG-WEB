@@ -1,14 +1,16 @@
-class Home extends Component {
+import React from 'react';
+import {connect} from 'react-redux';
+class Home extends React.Component {
     state = {  }
     render() {
         return (
             <div>
-                <a>
+                <h2>
                     claro
-                </a>
+                </h2>
             </div>
         );
     }
 }
 
-export default connect(, )(Home);
+export default connect()(Home);

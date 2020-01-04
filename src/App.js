@@ -15,7 +15,7 @@ class App extends React.Component {
     return (
       <Provider store={store}>
       <Router>
-        <div className="auth-inner">
+        <div>
           <Switch>
           <Route exact path = "/" component={Login}/>
           </Switch>
