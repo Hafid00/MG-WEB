@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect, Link } from "react-redux";
 
 
-class home extends Component {
+class Home extends Component {
 
     render() {
         return (
@@ -22,10 +22,9 @@ class home extends Component {
                         </div>
                     </div>
                 </div>
-
-
             </div>
         )
     }
 }
-export default connect()(home);
+
+export default connect()(Home);
