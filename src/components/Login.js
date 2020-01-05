@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { login } from '../actions/loginActions';
-import Conf from "../config/Conf";
 
 class Login extends Component {
     constructor() {
         super();
         this.state = {
-            pseudoValue: "",
-            passwordValue: ""
+            pseudoValue: "claro@gmail.com",
+            passwordValue: "claro0000"
         }
         this.onSubmit = this.onSubmit.bind(this);
         this.onChangeName = this.onChangeName.bind(this);
@@ -31,21 +30,6 @@ class Login extends Component {
             password: this.state.passwordValue
         }
         await this.props.login(body);
-        // fetch(url, {
-        //     method: 'POST',
-        //     headers: {
-        //       Accept: 'application/json',
-        //       'Content-Type': 'application/json',
-        //     },
-        //     body,
-        //   })
-        //     .then(response => response.json())
-        //     .then((responseJson) => {
-        //       console.log(responseJson);
-        //           })
-        //           .catch((err) => {
-        //            console.log('rr', err);
-        //           });
     }
     render() {
         return (
@@ -62,7 +46,7 @@ class Login extends Component {
                                     <div className="input-group-prepend">
                                         <span className="input-group-text"><i className="fas fa-user"></i></span>
                                     </div>
-                                    <input type="text" className="form-control" placeholder="username" value={this.state.value}
+                                    <input type="text" className="form-control" placeholder="username" value={this.state.pseudoValue}
                                         onChange={(e) => this.onChangeName(e.target.value)} />
 
                                 </div>
@@ -70,7 +54,7 @@ class Login extends Component {
                                     <div className="input-group-prepend">
                                         <span className="input-group-text"><i className="fas fa-key"></i></span>
                                     </div>
-                                    <input type="password" className="form-control" placeholder="password" value={this.state.value}
+                                    <input type="password" className="form-control" placeholder="password" value={this.state.passwordValue}
                                         onChange={(e) => this.onChangePass(e.target.value)} />
                                 </div>
                                 <div className="row align-items-center remember">
