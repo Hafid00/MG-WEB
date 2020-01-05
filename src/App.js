@@ -1,9 +1,10 @@
 import React from 'react';
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import { Route, Router, Switch } from 'react-router-dom';
 import Login from './components/Login';
 import home from './components/Home';
 import store from './store';
 import { Provider } from 'react-redux';
+import history from './history';
 
 
 class App extends React.Component {
@@ -14,7 +15,7 @@ class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <Router>
+        <Router history={history}>
           <Switch>
             <Route exact path="/" component={Login} />
             <Route exact path="/home" component={home} />

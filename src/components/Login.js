@@ -30,11 +30,7 @@ class Login extends Component {
             username: this.state.pseudoValue,
             password: this.state.passwordValue
         }
-        console.log(body);
         await this.props.login(body);
-
-        console.log("success");
-
         // fetch(url, {
         //     method: 'POST',
         //     headers: {
