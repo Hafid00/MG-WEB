@@ -4,21 +4,37 @@ import { login } from '../actions/loginActions';
 import Conf from "../config/Conf";
 
 class Login extends Component {
-    constructor(){
+    constructor() {
         super();
-        this.state={
-            pseudoValue:'',
-            passwordValue:''
+        this.state = {
+            pseudoValue: "",
+            passwordValue: ""
         }
-    }
-    login = () => {
-        const url = `${Conf.API_URL}/api/users/login/`;
+        this.onSubmit = this.onSubmit.bind(this);
+        this.onChangeName = this.onChangeName.bind(this);
+        this.onChangePass = this.onChangePass.bind(this);
 
+
+    }
+    onChangeName(value) {
+        this.setState({pseudoValue:value})
+    }
+    onChangePass(value) {
+        this.setState({passwordValue:value})
+    }
+
+
+    async onSubmit(e) {
+        e.preventDefault();
         const body = {
             username: this.state.pseudoValue,
             password: this.state.passwordValue
         }
-        this.props.login(body);
+        console.log(body);
+        await this.props.login(body);
+
+        console.log("success");
+
         // fetch(url, {
         //     method: 'POST',
         //     headers: {
@@ -37,37 +53,55 @@ class Login extends Component {
     }
     render() {
         return (
-            <form className="auth-inner">
-                <h3>Sign In</h3>
 
-                <div className="form-group">
-                    <label>Email address</label>
-                    <input type="email" className="form-control" placeholder="Enter email" value={this.state.pseudoValue} onChange={(e)=>this.setState({pseudoValue: e.target.value})}/>
-                </div>
+            <div className="container">
+                <div className="d-flex justify-content-center h-100">
+                    <div className="card">
+                        <div className="card-header">
+                            <h3>Sign In</h3>
+                        </div>
+                        <div className="card-body" >
+                            <form onSubmit={this.onSubmit}>
+                                <div className="input-group form-group">
+                                    <div className="input-group-prepend">
+                                        <span className="input-group-text"><i className="fas fa-user"></i></span>
+                                    </div>
+                                    <input type="text" className="form-control" placeholder="username" value={this.state.value}
+                                        onChange={(e) => this.onChangeName(e.target.value)} />
 
-                <div className="form-group">
-                    <label>Password</label>
-                    <input type="password" className="form-control" placeholder="Enter password" value={this.state.passwordValue} onChange={(e)=>this.setState({passwordValue: e.target.value})}/>
-                </div>
-
-                <div className="form-group">
-                    <div className="custom-control custom-checkbox">
-                        <input type="checkbox" className="custom-control-input" id="customCheck1" />
-                        <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
+                                </div>
+                                <div className="input-group form-group">
+                                    <div className="input-group-prepend">
+                                        <span className="input-group-text"><i className="fas fa-key"></i></span>
+                                    </div>
+                                    <input type="password" className="form-control" placeholder="password" value={this.state.value}
+                                        onChange={(e) => this.onChangePass(e.target.value)} />
+                                </div>
+                                <div className="row align-items-center remember">
+                                    <input type="checkbox" />Remember Me
+					</div>
+                                <div className="form-group">
+                                    <input type="submit" value="Login" className="btn float-right login_btn" />
+                                </div>
+                            </form>
+                        </div>
+                        <div className="card-footer">
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <button className="btn btn-primary btn-block" onClick={this.login}>Submit</button>
-            </form>
+
+            
         );
     }
 }
 const mapStateToProps = state => ({
-  });
-  
-  const mapDispatchToProps = dispatch => ({
+});
+
+const mapDispatchToProps = dispatch => ({
     login: (body) => {
         dispatch(login(body));
-      }
- });
-export default connect(mapStateToProps,mapDispatchToProps)(Login)
+    }
+});
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

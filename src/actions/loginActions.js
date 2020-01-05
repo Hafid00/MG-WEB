@@ -8,9 +8,6 @@ export function login(data){
           console.log('res', res)
         })
   
-        .catch((err) => {
-            console.log(err);
-          
-    });
+        ;
   }
 }
