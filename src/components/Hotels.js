@@ -10,6 +10,7 @@ import { ScrollPanel } from "primereact/scrollpanel";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
 import Gallery from "react-photo-gallery";
+import SelectedImage from '../Utils/SelectedImage';
 
 import {
   fetchHotels,
@@ -33,7 +34,9 @@ class Hotels extends Component {
       files: [],
       images: [],
       imageCliqued: "disabled",
-      targetToRemove: ""
+      targetToRemove: "",
+      selectAll: false,
+      indexToRemove: null
     };
 
     this.save = this.save.bind(this);
@@ -50,17 +53,19 @@ class Hotels extends Component {
     this.setState({ imageCliqued: "", targetToRemove: e });
     console.log(this.state.imageCliqued, e.currentTarget);
   };
-  removeImage(a) {
-    this.setState({
-      files: this.state.files.filter(
-        e => e.name !== this.state.targetToRemove.name
-      )
-    });
-    console.log(this.state.files);
+  removeImage(index) {
+    let newFiles = [ ...this.state.files ];
+    newFiles.splice(index, 1);
+    this.setState({ files: newFiles});
   }
   onFileChange = event => {
     this.setState({
       files: this.state.files.concat(Array.from(event.target.files))
+    });
+  };
+  onselectAll = event => {
+    this.setState({
+      selectAll: !this.state.selectAll
     });
   };
   uploadFile = (event, idhotel) => {
@@ -114,7 +119,22 @@ class Hotels extends Component {
       hotel: Object.assign({}, e.data)
     });
   }
-
+  selectImg = (index) => {
+    this.setState({ indexToRemove: index });
+    console.log('index', index)
+  }
+  imageRenderer = ({ index, left, top, key, photo }) => (
+    <SelectedImage
+      selected={this.state.selectAll ? true : false}
+      key={key}
+      margin={"2px"}
+      index={index}
+      photo={photo}
+      left={left}
+      top={top}
+      select={() => this.selectImg(index)}
+    />
+  )
   addNew() {
     this.newHotel = true;
     this.setState({
@@ -292,6 +312,9 @@ class Hotels extends Component {
                       type="file"
                       multiple
                     ></input>
+                    {this.state.files.length > 0 && <Button
+                      onClick={this.onselectAll}
+                    />}
                     <Gallery
                       photos={this.state.files.map(p => ({
                         src: URL.createObjectURL(p),
@@ -299,13 +322,14 @@ class Hotels extends Component {
                         height: 0.2
                       }))}
                       onClick={e => this.onImageClique(e)}
-                      on
+                      renderImage={this.imageRenderer}
+                    
                     />
                     <Button
                       className="btn-outline-primary font-weight-bold mb-2 mt-2"
-                      onClick={e => this.removeImage(e.target.value)}
+                      onClick={()=> this.removeImage(this.state.index)}
                       label="remove"
-                      disabled={this.state.imageCliqued}
+                      disabled={this.state.indexToRemove ? '': 'disabled'}
                     ></Button>
                   </div>
 
@@ -356,3 +380,4 @@ const mapDispatchToProps = dispatch => ({
   }
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Hotels);
+
