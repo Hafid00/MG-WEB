@@ -1,14 +1,15 @@
 import LoginService from "../services/LoginService";
 import history from "../history";
+import * as actionTypes from './types';
 
 export function login(data){
-    return () => {
+    return (dispatch) => {
       LoginService.login(data)
         .then((res) => {
             if(res.data.success){
-                // dispatch({ type: types.AUTH_USER });
-                // localStorage.setItem('token', response.data.token);
-                history.push('/home');
+                dispatch(addToken(res.data.result.token));
+                localStorage.setItem('token', res.data.result.token);
+                history.push('/townSelect');
             }
         })
         .catch((err) => {
@@ -17,4 +18,10 @@ export function login(data){
   
         ;
   }
+}
+export function addToken(token){
+    return{
+        type: actionTypes.AUTH_USER,
+        token
+    }
 }

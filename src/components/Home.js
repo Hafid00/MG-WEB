@@ -5,7 +5,10 @@ import { Link } from "react-router-dom";
 
 
 class Home extends Component {
+    componentDidMount() {
+        console.log(this.props.location.state.town.code);
 
+    }
     render() {
         return (
 
@@ -16,7 +19,6 @@ class Home extends Component {
                         <div className="card bg-transparent" >
                             <div className="card-header text-center font-weight-bold bg-transparent">Manage</div>
                             <ul className="list-group list-group-flush">
-                                <Link to="/towns" className="list-group-item btn btn-outline-primary font-weight-bold">Towns</Link>
                                 <Link to="/hotels" className="list-group-item btn btn-outline-primary font-weight-bold">Hotels</Link>
                                 <Link to="/restaurants" className="list-group-item btn btn-outline-primary font-weight-bold">Restaurants</Link>
                                 <Link to="/places" className="list-group-item btn btn-outline-primary font-weight-bold">Places</Link>
