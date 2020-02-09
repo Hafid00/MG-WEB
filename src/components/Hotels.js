@@ -148,7 +148,22 @@ class Hotels extends Component {
       hotel: Object.assign({}, e.data)
     });
   }
-
+  selectImg = index => {
+    this.setState({ indexToRemove: index });
+    console.log("index", index);
+  };
+  imageRenderer = ({ index, left, top, key, photo }) => (
+    <SelectedImage
+      selected={this.state.selectAll ? true : false}
+      key={key}
+      margin={"2px"}
+      index={index}
+      photo={photo}
+      left={left}
+      top={top}
+      select={() => this.selectImg(index)}
+    />
+  );
   addNew() {
     this.newHotel = true;
     this.setState({
