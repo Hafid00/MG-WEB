@@ -1,5 +1,6 @@
 import HotelsServices from "../services/hotelsServices";
 import * as actionTypes from "./types";
+import { addHotelImages } from "../actions/imagesActions";
 
 export function fetchHotels(id) {
   return dispatch => {
@@ -15,13 +16,14 @@ export function fetchHotels(id) {
       });
   };
 }
-export function addHotel(idtown, data, token) {
+export function addHotel(idtown, data, token, dataImg) {
   return dispatch => {
     HotelsServices.addHotel(data, token)
       .then(res => {
         console.log("res", res);
         if (res.data.success) {
           dispatch(fetchHotels(idtown));
+          dispatch(addHotelImages(dataImg, token, res.data.result));
           dispatch(displayDialog(false));
         }
       })

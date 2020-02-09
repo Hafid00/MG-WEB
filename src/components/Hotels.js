@@ -9,7 +9,8 @@ import { Rating } from "primereact/rating";
 import { ScrollPanel } from "primereact/scrollpanel";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
-import Gallery from "react-photo-gallery";
+import { Carousel } from "primereact/carousel";
+import { FileUpload } from "primereact/fileupload";
 
 import {
   fetchHotels,
@@ -19,68 +20,99 @@ import {
   delHotel
 } from "../actions/hotelsActions";
 import { fetchAvatars } from "../actions/avatarsActions";
-import { addHotelImages } from "../actions/imagesActions";
 
 import "react-dropzone-uploader/dist/styles.css";
-import Conf from "../config/Conf";
-import axios from "axios";
 
 class Hotels extends Component {
   constructor() {
     super();
     this.state = {
       hotel: null,
-      files: [],
-      images: [],
-      imageCliqued: "disabled",
-      targetToRemove: ""
+      files: []
     };
 
     this.save = this.save.bind(this);
     this.delete = this.delete.bind(this);
     this.onhotelselect = this.onhotelselect.bind(this);
     this.addNew = this.addNew.bind(this);
-    this.onImageClique = this.onImageClique.bind(this);
+    this.onFileChange = this.onFileChange.bind(this);
+    this.responsiveSettings = [
+      {
+        breakpoint: "200px",
+        numVisible: 1,
+        numScroll: 1
+      }
+    ];
   }
   componentDidMount() {
     this.props.fetchHotels(this.props.location.state.town);
     this.props.fetchAvatars();
   }
-  onImageClique = async e => {
-    this.setState({ imageCliqued: "", targetToRemove: e });
-    console.log(this.state.imageCliqued, e.currentTarget);
+  imageTemplate = img => {
+    return (
+      <div className="p-col-4">
+        <img src={URL.createObjectURL(img)} alt="" className="p-col-4" />
+
+        <br />
+        <div
+          className="mt-4"
+          style={{
+            display: "flex",
+            width: "100%",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+        >
+          <button
+            className="btn btn-outline-dark "
+            onClick={() => this.removeImage(img)}
+          >
+            <i className="far fa-trash-alt"></i>
+          </button>
+        </div>
+      </div>
+    );
   };
-  removeImage(a) {
+  removeImage = item => {
+    let newfiles = this.state.files.filter(e => e.name !== item.name);
+    console.log(newfiles);
+
     this.setState({
-      files: this.state.files.filter(
-        e => e.name !== this.state.targetToRemove.name
-      )
+      files: newfiles
     });
     console.log(this.state.files);
-  }
-  onFileChange = event => {
-    this.setState({
-      files: this.state.files.concat(Array.from(event.target.files))
-    });
   };
-  uploadFile = (event, idhotel) => {
-    event.preventDefault();
+  onFileChange(event) {
+    this.setState({
+      files: event.files
+    });
+  }
+  onerr = () => {
+    console.log(this.state.files);
+  };
+  async save(event) {
     let data = new FormData();
     this.state.files.forEach(a => data.append("file", a));
     console.log(this.state.files, data);
-    this.props.addHotelImages(data, this.props.token, 1);
-  };
-
-  save() {
     const Body = {
       name: this.state.hotel.name,
+      rating: this.state.hotel.rating,
+      price: this.state.hotel.price,
+      email: this.state.hotel.email,
+      avatar: this.state.hotel.avatar.code,
+      phone: this.state.hotel.phone,
+      description: this.state.hotel.description,
+      latitude: this.state.hotel.latitude,
+      longitude: this.state.hotel.longitude,
       town: { id: this.props.location.state.town }
     };
+    console.log(Body);
     if (this.newHotel) {
-      this.props.addHotel(
+      await this.props.addHotel(
         this.props.location.state.town,
         Body,
-        this.props.token
+        this.props.token,
+        data
       );
     } else {
       this.props.updHotel(
@@ -90,6 +122,7 @@ class Hotels extends Component {
         this.props.token
       );
     }
+    this.props.displayDialog(true);
   }
 
   delete() {
@@ -99,6 +132,7 @@ class Hotels extends Component {
       this.state.hotel.id,
       this.props.token
     );
+    this.props.displayDialog(true);
   }
 
   updateProperty(property, value) {
@@ -118,10 +152,24 @@ class Hotels extends Component {
   addNew() {
     this.newHotel = true;
     this.setState({
-      hotel: { id: "", name: "" }
+      hotel: {
+        name: "",
+        rating: 0,
+        price: "",
+        email: "",
+        avatar: "",
+        phone: "",
+        description: "",
+        latitude: "",
+        longitude: ""
+      }
     });
     this.props.displayDialog(true);
   }
+  onHideCallback = () => {
+    if (this.state.files.length > 0) this.setState({ files: [] });
+    this.props.displayDialog(false);
+  };
 
   render() {
     let footer = (
@@ -177,7 +225,7 @@ class Hotels extends Component {
             header="hotel Details"
             modal={true}
             footer={dialogFooter}
-            onHide={() => this.props.displayDialog(false)}
+            onHide={this.onHideCallback}
           >
             {this.state.hotel && (
               <div className="p-grid p-fluid">
@@ -278,42 +326,42 @@ class Hotels extends Component {
                       value={this.state.hotel.avatar}
                       options={this.props.avatarSelect}
                       onChange={e => {
-                        this.updateProperty("avatar", e.target.value);
+                        this.updateProperty("avatar", e.value);
                       }}
                       placeholder="Select an Avatar"
                     />
                   </div>
 
-                  <div className="p-col-4">
+                  <div className="p-col-4 mb-4" style={{ padding: ".75em" }}>
                     <label htmlFor="images">Images</label>
                     <br />
-                    <input
+                    <FileUpload
+                      name="demo[]"
+                      customUpload={true}
+                      uploadHandler={e => this.onFileChange(e)}
+                      multiple={true}
+                      onError={this.onerr}
+                      maxFileSize={1000000}
+                    />
+                    {/* <input
                       onChange={this.onFileChange}
                       type="file"
                       multiple
-                    ></input>
-                    <Gallery
-                      photos={this.state.files.map(p => ({
-                        src: URL.createObjectURL(p),
-                        width: 0.2,
-                        height: 0.2
-                      }))}
-                      onClick={e => this.onImageClique(e)}
-                      on
-                    />
-                    <Button
-                      className="btn-outline-primary font-weight-bold mb-2 mt-2"
-                      onClick={e => this.removeImage(e.target.value)}
-                      label="remove"
-                      disabled={this.state.imageCliqued}
-                    ></Button>
+                      files
+                    ></input> */}
+                    {/* {this.state.files.length > 0 && (
+                      <Carousel
+                        value={this.state.files}
+                        itemTemplate={this.imageTemplate}
+                        style={{ width: "", marginTop: "2em" }}
+                        numVisible={1}
+                        numScroll={1}
+                        responsive={this.responsiveSettings}
+                        verticalViewPortHeight="300px"
+                        orientation="vertical"
+                      />
+                    )} */}
                   </div>
-
-                  <Button
-                    className="btn-outline-primary font-weight-bold mb-5"
-                    onClick={this.uploadFile}
-                    label="upload"
-                  ></Button>
                 </ScrollPanel>
               </div>
             )}
@@ -333,17 +381,14 @@ function mapStateToProps(state) {
   };
 }
 const mapDispatchToProps = dispatch => ({
-  addHotelImages: (data, token, idhotel) => {
-    dispatch(addHotelImages(data, token, idhotel));
-  },
   fetchAvatars: () => {
     dispatch(fetchAvatars());
   },
   fetchHotels: id => {
     dispatch(fetchHotels(id));
   },
-  addHotel: (idtown, data, token) => {
-    dispatch(addHotel(idtown, data, token));
+  addHotel: (idtown, data, token, dataImg) => {
+    dispatch(addHotel(idtown, data, token, dataImg));
   },
   updHotel: (idtown, id, data, token) => {
     dispatch(updHotel(idtown, id, data, token));
