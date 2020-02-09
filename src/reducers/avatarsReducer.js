@@ -8,7 +8,7 @@ const initialState = {
 const avatars = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_AVATARS:
-      let avatars = action.avatars.map(p => ({ name: p.name, code: p.id }));
+      let avatars = action.avatars.map(p => ({ name: p.name, code: p.url }));
       return { ...state, avatars: action.avatars, avatarSelect: avatars };
     default:
       return state;
