@@ -23,6 +23,8 @@ import { fetchAvatars } from "../actions/avatarsActions";
 
 import "react-dropzone-uploader/dist/styles.css";
 
+
+
 class Hotels extends Component {
   constructor() {
     super();
@@ -43,6 +45,8 @@ class Hotels extends Component {
         numScroll: 1
       }
     ];
+    this.upFile = React.createRef()
+
   }
   componentDidMount() {
     this.props.fetchHotels(this.props.location.state.town);
@@ -147,6 +151,7 @@ class Hotels extends Component {
     this.setState({
       hotel: Object.assign({}, e.data)
     });
+    console.log(e);
   }
   selectImg = index => {
     this.setState({ indexToRemove: index });
@@ -170,8 +175,18 @@ class Hotels extends Component {
     this.props.displayDialog(true);
   }
   onHideCallback = () => {
-    if (this.state.files.length > 0) this.setState({ files: [] });
+    // this.upFile.current.state.files.map(d =>{ return {...d, objectURL: 'https://s3.eu-west-3.amazonaws.com/newbuckettrvl/1580859925140-index.jpeg'}});
+    // this.upFile.current.state.files[0].objectURL = 'https://s3.eu-west-3.amazonaws.com/newbuckettrvl/1580859925140-index.jpeg';
+
+    if (this.state.files.length > 0){
+       this.setState({ files: [] });
+    }
+    this.upFile.current.clear();
+
     this.props.displayDialog(false);
+    console.log(this.upFile);
+
+
   };
 
   render() {
@@ -339,6 +354,7 @@ class Hotels extends Component {
                     <label htmlFor="images">Images</label>
                     <br />
                     <FileUpload
+                      ref={this.upFile}
                       name="demo[]"
                       customUpload={true}
                       uploadHandler={e => this.onFileChange(e)}
