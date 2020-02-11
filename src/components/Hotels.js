@@ -9,9 +9,8 @@ import { Rating } from "primereact/rating";
 import { ScrollPanel } from "primereact/scrollpanel";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
-import { Carousel } from "primereact/carousel";
 import { FileUpload } from "primereact/fileupload";
-
+import { InputMask } from "primereact/inputmask";
 import {
   fetchHotels,
   addHotel,
@@ -20,10 +19,6 @@ import {
   delHotel
 } from "../actions/hotelsActions";
 import { fetchAvatars } from "../actions/avatarsActions";
-
-import "react-dropzone-uploader/dist/styles.css";
-
-
 
 class Hotels extends Component {
   constructor() {
@@ -38,54 +33,12 @@ class Hotels extends Component {
     this.onhotelselect = this.onhotelselect.bind(this);
     this.addNew = this.addNew.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
-    this.responsiveSettings = [
-      {
-        breakpoint: "200px",
-        numVisible: 1,
-        numScroll: 1
-      }
-    ];
-    this.upFile = React.createRef()
-
+    this.upFile = React.createRef();
   }
   componentDidMount() {
     this.props.fetchHotels(this.props.location.state.town);
     this.props.fetchAvatars();
   }
-  imageTemplate = img => {
-    return (
-      <div className="p-col-4">
-        <img src={URL.createObjectURL(img)} alt="" className="p-col-4" />
-
-        <br />
-        <div
-          className="mt-4"
-          style={{
-            display: "flex",
-            width: "100%",
-            alignItems: "center",
-            justifyContent: "center"
-          }}
-        >
-          <button
-            className="btn btn-outline-dark "
-            onClick={() => this.removeImage(img)}
-          >
-            <i className="far fa-trash-alt"></i>
-          </button>
-        </div>
-      </div>
-    );
-  };
-  removeImage = item => {
-    let newfiles = this.state.files.filter(e => e.name !== item.name);
-    console.log(newfiles);
-
-    this.setState({
-      files: newfiles
-    });
-    console.log(this.state.files);
-  };
   onFileChange(event) {
     this.setState({
       files: event.files
@@ -153,17 +106,13 @@ class Hotels extends Component {
     });
     console.log(e);
   }
-  selectImg = index => {
-    this.setState({ indexToRemove: index });
-    console.log("index", index);
-  };
   addNew() {
     this.newHotel = true;
     this.setState({
       hotel: {
         name: "",
         rating: 0,
-        price: "",
+        price: null,
         email: "",
         avatar: "",
         phone: "",
@@ -176,17 +125,25 @@ class Hotels extends Component {
   }
   onHideCallback = () => {
     // this.upFile.current.state.files.map(d =>{ return {...d, objectURL: 'https://s3.eu-west-3.amazonaws.com/newbuckettrvl/1580859925140-index.jpeg'}});
-    // this.upFile.current.state.files[0].objectURL = 'https://s3.eu-west-3.amazonaws.com/newbuckettrvl/1580859925140-index.jpeg';
+    // this.upFile.current.state.files[0].objectURL =
+    //   "https://s3.eu-west-3.amazonaws.com/newbuckettrvl/1580859925140-index.jpeg";
 
-    if (this.state.files.length > 0){
-       this.setState({ files: [] });
+    if (this.state.files.length > 0) {
+      this.setState({ files: [] });
     }
     this.upFile.current.clear();
 
     this.props.displayDialog(false);
     console.log(this.upFile);
-
-
+  };
+  avatarTemplate = rowData => {
+    return <img src={rowData.avatar} alt={rowData.avatar} width="48px" />;
+  };
+  priceTemplate = rowData => {
+    return rowData.price + "   MAD";
+  };
+  rateTemplate = rowData => {
+    return <Rating value={rowData.rating} cancel={false} readonly={true} />;
   };
 
   render() {
@@ -219,11 +176,10 @@ class Hotels extends Component {
     );
 
     return (
-      <div>
-        <div className="container mx-10">
+      <div className="container mt-5 p-auto">
+        <div>
           <DataTable
             footerStyle={{ bg: "transparent" }}
-            style={{ padding: "3cm" }}
             value={this.props.hotels}
             paginator={true}
             rows={15}
@@ -232,9 +188,66 @@ class Hotels extends Component {
             selection={this.state.selectedhotel}
             onSelectionChange={e => this.setState({ selectedhotel: e.value })}
             onRowSelect={this.onhotelselect}
+            resizableColumns={true}
+            columnResizeMode="fit"
           >
-            <Column field="id" header="id" sortable={true} />
-            <Column field="name" header="name" sortable={true} />
+            <Column
+              field="name"
+              header="name"
+              sortable={true}
+              style={{ width: "250px" }}
+            />
+            <Column
+              field="rating"
+              header="rating"
+              sortable={true}
+              body={this.rateTemplate}
+              style={{ textAlign: "center", width: "150px" }}
+            />
+            <Column
+              field="price"
+              header="price"
+              sortable={true}
+              body={this.priceTemplate}
+              style={{ width: "150px" }}
+            />
+            <Column
+              field="email"
+              header="email"
+              sortable={true}
+              style={{ width: "250px" }}
+            />
+            <Column
+              field="phone"
+              header="phone"
+              sortable={true}
+              style={{ width: "250px" }}
+            />
+            <Column
+              field="latitude"
+              header="latitude"
+              sortable={true}
+              style={{ width: "150px" }}
+            />
+            <Column
+              field="longitude"
+              header="longitude"
+              sortable={true}
+              style={{ width: "150px" }}
+            />
+            <Column
+              field="description"
+              header="description"
+              sortable={true}
+              style={{ width: "250px" }}
+            />
+            <Column
+              field="avatar"
+              header="avatar"
+              sortable={true}
+              body={this.avatarTemplate}
+              style={{ textAlign: "center", width: "250px" }}
+            />
           </DataTable>
 
           <Dialog
@@ -273,6 +286,7 @@ class Hotels extends Component {
                     <label htmlFor="price">Price</label>
                     <InputText
                       id="price"
+                      keyfilter="pint"
                       onChange={e => {
                         this.updateProperty("price", e.target.value);
                       }}
@@ -282,7 +296,8 @@ class Hotels extends Component {
 
                   <div className="p-col-4" style={{ padding: ".75em" }}>
                     <label htmlFor="phone">Phone</label>
-                    <InputText
+                    <InputMask
+                      mask="+999 699999999"
                       id="phone"
                       onChange={e => {
                         this.updateProperty("phone", e.target.value);
@@ -362,24 +377,6 @@ class Hotels extends Component {
                       onError={this.onerr}
                       maxFileSize={1000000}
                     />
-                    {/* <input
-                      onChange={this.onFileChange}
-                      type="file"
-                      multiple
-                      files
-                    ></input> */}
-                    {/* {this.state.files.length > 0 && (
-                      <Carousel
-                        value={this.state.files}
-                        itemTemplate={this.imageTemplate}
-                        style={{ width: "", marginTop: "2em" }}
-                        numVisible={1}
-                        numScroll={1}
-                        responsive={this.responsiveSettings}
-                        verticalViewPortHeight="300px"
-                        orientation="vertical"
-                      />
-                    )} */}
                   </div>
                 </ScrollPanel>
               </div>

@@ -1,20 +1,20 @@
-import React from 'react';
-import { Route, Router, Switch } from 'react-router-dom';
-import Login from './components/Login';
-import Home from './components/Home';
-import TownSelect from './components/TownSelect';
-import Towns from './components/Towns';
-import Hotels from './components/Hotels';
-import Places from './components/Places';
-import Restaurants from './components/Restaurants';
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
-import 'primereact/resources/themes/nova-light/theme.css';
+import React from "react";
+import { Route, Router, Switch } from "react-router-dom";
+import Login from "./components/Login";
+import Home from "./components/Home";
+import TownSelect from "./components/TownSelect";
+import Towns from "./components/Towns";
+import Hotels from "./components/Hotels";
+import Places from "./components/Places";
+import Restaurants from "./components/Restaurants";
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
+import "primereact/resources/themes/nova-light/theme.css";
+import "./App.css";
 
-import store from './store';
-import { Provider } from 'react-redux';
-import history from './history';
-
+import store from "./store";
+import { Provider } from "react-redux";
+import history from "./history";
 
 class App extends React.Component {
   constructor(props) {
@@ -36,7 +36,6 @@ class App extends React.Component {
           </Switch>
         </Router>
       </Provider>
-
     );
   }
 }
