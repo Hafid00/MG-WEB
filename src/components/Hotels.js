@@ -19,12 +19,14 @@ import {
   delHotel
 } from "../actions/hotelsActions";
 import { fetchAvatars } from "../actions/avatarsActions";
+import RenderImage from "../Utils/RenderImage";
 
 class Hotels extends Component {
   constructor() {
     super();
     this.state = {
       hotel: null,
+      selectedImgs: [],
       files: []
     };
 
@@ -61,6 +63,7 @@ class Hotels extends Component {
       description: this.state.hotel.description,
       latitude: this.state.hotel.latitude,
       longitude: this.state.hotel.longitude,
+      city: this.props.location.state.tname,
       town: { id: this.props.location.state.town }
     };
     console.log(Body);
@@ -98,15 +101,16 @@ class Hotels extends Component {
     this.setState({ hotel: hotel });
   }
 
-  onhotelselect(e) {
+  async onhotelselect(e) {
     this.newHotel = false;
     this.props.displayDialog(true);
-    this.setState({
+    await this.setState({
       hotel: Object.assign({}, e.data)
     });
-    console.log(e);
+    console.log(e, this.state.hotel.images);
   }
   addNew() {
+    console.log(this.props.hotels);
     this.newHotel = true;
     this.setState({
       hotel: {
@@ -129,7 +133,7 @@ class Hotels extends Component {
     //   "https://s3.eu-west-3.amazonaws.com/newbuckettrvl/1580859925140-index.jpeg";
 
     if (this.state.files.length > 0) {
-      this.setState({ files: [] });
+      this.setState({ files: [], selectedImg: null });
     }
     this.upFile.current.clear();
 
@@ -137,7 +141,14 @@ class Hotels extends Component {
     console.log(this.upFile);
   };
   avatarTemplate = rowData => {
-    return <img src={rowData.avatar} alt={rowData.avatar} width="48px" />;
+    return (
+      <img
+        src={rowData.avatar}
+        alt={rowData.avatar}
+        width="48px"
+        height="48px"
+      />
+    );
   };
   priceTemplate = rowData => {
     return rowData.price + "   MAD";
@@ -145,7 +156,17 @@ class Hotels extends Component {
   rateTemplate = rowData => {
     return <Rating value={rowData.rating} cancel={false} readonly={true} />;
   };
-
+  onImgClick = (e, p) => {
+    let tb = this.state.selectedImgs;
+    console.log(e, p);
+    if (!p) {
+      tb.push(e);
+    } else tb = tb.filter(a => a !== e);
+    this.setState({ selectedImgs: tb });
+  };
+  deleteImgs = () => {
+    console.log(this.state.selectedImgs);
+  };
   render() {
     let footer = (
       <div
@@ -168,6 +189,11 @@ class Hotels extends Component {
 
     let dialogFooter = (
       <div>
+        <Button
+          label="Delete photos"
+          icon="pi-trash"
+          onClick={this.deleteImgs}
+        />
         {!this.newHotel && (
           <Button label="Delete" icon="pi pi-times" onClick={this.delete} />
         )}
@@ -252,7 +278,7 @@ class Hotels extends Component {
 
           <Dialog
             visible={this.props.dialog}
-            width="300px"
+            width="200px"
             header="hotel Details"
             modal={true}
             footer={dialogFooter}
@@ -261,7 +287,7 @@ class Hotels extends Component {
             {this.state.hotel && (
               <div className="p-grid p-fluid">
                 <ScrollPanel style={{ width: "100%", height: "400px" }}>
-                  <div className="p-col-4" style={{ padding: ".75em" }}>
+                  <div style={{ padding: ".75em" }}>
                     <label htmlFor="name">Name</label>
                     <InputText
                       id="name"
@@ -272,7 +298,7 @@ class Hotels extends Component {
                     />
                   </div>
 
-                  <div className="p-col-4" style={{ padding: ".75em" }}>
+                  <div style={{ padding: ".75em" }}>
                     <label htmlFor="rating">Rating</label>
                     <Rating
                       value={this.state.hotel.rating}
@@ -282,7 +308,7 @@ class Hotels extends Component {
                     />
                   </div>
 
-                  <div className="p-col-4" style={{ padding: ".75em" }}>
+                  <div style={{ padding: ".75em" }}>
                     <label htmlFor="price">Price</label>
                     <InputText
                       id="price"
@@ -294,7 +320,7 @@ class Hotels extends Component {
                     />
                   </div>
 
-                  <div className="p-col-4" style={{ padding: ".75em" }}>
+                  <div style={{ padding: ".75em" }}>
                     <label htmlFor="phone">Phone</label>
                     <InputMask
                       mask="+999 699999999"
@@ -306,7 +332,7 @@ class Hotels extends Component {
                     />
                   </div>
 
-                  <div className="p-col-4" style={{ padding: ".75em" }}>
+                  <div style={{ padding: ".75em" }}>
                     <label htmlFor="email">Email</label>
                     <InputText
                       id="email"
@@ -317,7 +343,7 @@ class Hotels extends Component {
                     />
                   </div>
 
-                  <div className="p-col-4" style={{ padding: ".75em" }}>
+                  <div style={{ padding: ".75em" }}>
                     <label htmlFor="latitude">Latitude</label>
                     <InputText
                       id="latitude"
@@ -328,7 +354,7 @@ class Hotels extends Component {
                     />
                   </div>
 
-                  <div className="p-col-4" style={{ padding: ".75em" }}>
+                  <div style={{ padding: ".75em" }}>
                     <label htmlFor="longitude">Longitude</label>
                     <InputText
                       id="longitude"
@@ -339,7 +365,7 @@ class Hotels extends Component {
                     />
                   </div>
 
-                  <div className="p-col-4" style={{ padding: ".75em" }}>
+                  <div style={{ padding: ".75em" }}>
                     <label htmlFor="description">Description</label>
                     <InputTextarea
                       id="description"
@@ -350,7 +376,7 @@ class Hotels extends Component {
                     />
                   </div>
 
-                  <div className="p-col-4" style={{ padding: ".75em" }}>
+                  <div style={{ padding: ".75em" }}>
                     <label htmlFor="avatar">Avatar</label>
                     <br />
                     <Dropdown
@@ -365,8 +391,20 @@ class Hotels extends Component {
                     />
                   </div>
 
-                  <div className="p-col-4 mb-4" style={{ padding: ".75em" }}>
+                  <div
+                    className="p-col-fixed"
+                    style={{ width: "400px", padding: ".75em" }}
+                  >
                     <label htmlFor="images">Images</label>
+                    {!this.newHotel && (
+                      <div>
+                        {this.state.hotel.images.map(e => {
+                          return (
+                            <RenderImage item={e} onClick={this.onImgClick} />
+                          );
+                        })}
+                      </div>
+                    )}
                     <br />
                     <FileUpload
                       ref={this.upFile}

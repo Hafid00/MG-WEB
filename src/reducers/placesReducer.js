@@ -1,17 +1,20 @@
-import { FETCH_PLACES } from "../actions/types";
-
+import { FETCH_PLACES, DISPLAY_DIALOG } from "../actions/types";
 const initialState = {
-    places: [],
-  
-  };
+  places: [],
+  displayDialog: false
+};
 
 const places = (state = initialState, action) => {
-    switch (action.type) {
-        case FETCH_PLACES:
-            return{ ...state, places: action.places }
+  switch (action.type) {
+    case FETCH_PLACES:
+      console.log("res");
 
-        default: 
-            return state;
-    }
-}
-export default places
+      return { ...state, places: action.places };
+    case DISPLAY_DIALOG:
+      return { ...state, displayDialog: action.bool };
+
+    default:
+      return state;
+  }
+};
+export default places;

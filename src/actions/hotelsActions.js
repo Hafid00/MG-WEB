@@ -22,8 +22,8 @@ export function addHotel(idtown, data, token, dataImg) {
       .then(res => {
         console.log("res", res);
         if (res.data.success) {
-          dispatch(fetchHotels(idtown));
           dispatch(addHotelImages(dataImg, token, res.data.result));
+          dispatch(fetchHotels(idtown));
           dispatch(displayDialog(false));
         }
       })

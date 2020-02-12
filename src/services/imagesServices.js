@@ -24,7 +24,7 @@ export default class ImagesService {
     });
   static addPlaceImages = (data, token, idPlace) =>
     axios({
-      url: `${Conf.API_URL}/api/images/uploadidPlaceImages/${idPlace}`,
+      url: `${Conf.API_URL}/api/images/uploadPlaceImages/${idPlace}`,
       method: "POST",
       headers: {
         "Content-Type": "multipart/form-data",
