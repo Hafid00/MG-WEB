@@ -13,29 +13,22 @@ export default class RenderImage extends Component {
   };
   render() {
     return (
-      // <div
-      //   className="p-col-fixed"
-      //   style={{
-      //     width: "70px",
-      //     backgroundColor: this.state.selected ? "red" : null,
-      //     height: "70px"
-      //   }}
-      // >
       <img
         id={this.props.item.id}
         src={this.props.item.url}
         alt={this.props.item.url}
         selected={this.state.selected}
         style={{
-          "box-shadow": this.state.selected ? "0px 0px 4px 4px red" : null
+          "box-shadow": this.state.selected ? "0px 0px 6px 6px #174237" : null,
+          "border-radius": "10%",
+          opacity: this.state.selected ? "0.8" : null
         }}
-        width="70px"
-        height="70px"
-        hspace="6px"
-        vspace="4px"
+        width="77px"
+        height="77px"
+        hspace="8px"
+        vspace="8px"
         onClick={this.onClick}
-      />
-      // </div>
+      ></img>
     );
   }
 }

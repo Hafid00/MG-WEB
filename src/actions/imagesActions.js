@@ -1,5 +1,5 @@
 import ImagesServices from "../services/imagesServices";
-import * as actionTypes from "./types";
+import { fetchHotels } from "../actions/hotelsActions";
 
 export function addHotelImages(data, token, idhotel) {
   return dispatch => {
@@ -35,6 +35,21 @@ export function addPlaceImages(data, token, idPlace) {
       .then(res => {
         console.log("res", res);
         if (res.data.success) {
+          console.log("success");
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+}
+export function delImages(data, token, idtown) {
+  return dispatch => {
+    ImagesServices.delImages(data, token)
+      .then(res => {
+        console.log("res", res);
+        if (res.data.success) {
+          dispatch(fetchHotels(idtown));
           console.log("success");
         }
       })

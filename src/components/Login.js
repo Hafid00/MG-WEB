@@ -1,87 +1,96 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { login } from '../actions/loginActions';
+import { login } from "../actions/loginActions";
 
 class Login extends Component {
-    constructor() {
-        super();
-        this.state = {
-            pseudoValue: "claro@gmail.com",
-            passwordValue: "claro0000"
-        }
-        this.onSubmit = this.onSubmit.bind(this);
-        this.onChangeName = this.onChangeName.bind(this);
-        this.onChangePass = this.onChangePass.bind(this);
+  constructor() {
+    super();
+    this.state = {
+      pseudoValue: "a@gmail.com",
+      passwordValue: "azera0123"
+    };
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onChangeName = this.onChangeName.bind(this);
+    this.onChangePass = this.onChangePass.bind(this);
+  }
+  onChangeName(value) {
+    this.setState({ pseudoValue: value });
+  }
+  onChangePass(value) {
+    this.setState({ passwordValue: value });
+  }
 
-
-    }
-    onChangeName(value) {
-        this.setState({pseudoValue:value})
-    }
-    onChangePass(value) {
-        this.setState({passwordValue:value})
-    }
-
-
-    async onSubmit(e) {
-        e.preventDefault();
-        const body = {
-            username: this.state.pseudoValue,
-            password: this.state.passwordValue
-        }
-        await this.props.login(body);
-    }
-    render() {
-        return (
-
-            <div className="container">
-                <div className="d-flex justify-content-center h-100">
-                    <div className="card">
-                        <div className="card-header">
-                            <h3>Sign In</h3>
-                        </div>
-                        <div className="card-body" >
-                            <form onSubmit={this.onSubmit}>
-                                <div className="input-group form-group">
-                                    <div className="input-group-prepend">
-                                        <span className="input-group-text"><i className="fas fa-user"></i></span>
-                                    </div>
-                                    <input type="text" className="form-control" placeholder="username" value={this.state.pseudoValue}
-                                        onChange={(e) => this.onChangeName(e.target.value)} />
-
-                                </div>
-                                <div className="input-group form-group">
-                                    <div className="input-group-prepend">
-                                        <span className="input-group-text"><i className="fas fa-key"></i></span>
-                                    </div>
-                                    <input type="password" className="form-control" placeholder="password" value={this.state.passwordValue}
-                                        onChange={(e) => this.onChangePass(e.target.value)} />
-                                </div>
-                                <div className="row align-items-center remember">
-                                    <input type="checkbox" />Remember Me
-					</div>
-                                <div className="form-group">
-                                    <input type="submit" value="Login" className="btn float-right login_btn" />
-                                </div>
-                            </form>
-                        </div>
-                        <div className="card-footer">
-                        </div>
-                    </div>
-                </div>
+  async onSubmit(e) {
+    e.preventDefault();
+    const body = {
+      username: this.state.pseudoValue,
+      password: this.state.passwordValue
+    };
+    await this.props.login(body);
+  }
+  render() {
+    return (
+      <div className="container">
+        <div className="d-flex justify-content-center h-100">
+          <div className="card">
+            <div className="card-header">
+              <h3>Sign In</h3>
             </div>
-
-
-            
-        );
-    }
+            <div className="card-body">
+              <form onSubmit={this.onSubmit}>
+                <div className="input-group form-group">
+                  <div className="input-group-prepend">
+                    <span className="input-group-text">
+                      <i className="fas fa-user"></i>
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="username"
+                    value={this.state.pseudoValue}
+                    onChange={e => this.onChangeName(e.target.value)}
+                  />
+                </div>
+                <div className="input-group form-group">
+                  <div className="input-group-prepend">
+                    <span className="input-group-text">
+                      <i className="fas fa-key"></i>
+                    </span>
+                  </div>
+                  <input
+                    type="password"
+                    className="form-control"
+                    placeholder="password"
+                    value={this.state.passwordValue}
+                    onChange={e => this.onChangePass(e.target.value)}
+                  />
+                </div>
+                <div className="row align-items-center remember">
+                  <input type="checkbox" />
+                  Remember Me
+                </div>
+                <div className="form-group">
+                  <input
+                    type="submit"
+                    value="Login"
+                    className="btn float-right login_btn"
+                  />
+                </div>
+              </form>
+            </div>
+            <div className="card-footer"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
-const mapStateToProps = state => ({
-});
+const mapStateToProps = state => ({});
 
 const mapDispatchToProps = dispatch => ({
-    login: (body) => {
-        dispatch(login(body));
-    }
+  login: body => {
+    dispatch(login(body));
+  }
 });
-export default connect(mapStateToProps, mapDispatchToProps)(Login)
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

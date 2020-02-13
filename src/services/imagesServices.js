@@ -32,4 +32,14 @@ export default class ImagesService {
       },
       data
     });
+  static delImages = (data, token) =>
+    axios({
+      url: `${Conf.API_URL}/api/images/deleteImages`,
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token
+      },
+      data
+    });
 }

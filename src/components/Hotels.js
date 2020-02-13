@@ -18,6 +18,7 @@ import {
   updHotel,
   delHotel
 } from "../actions/hotelsActions";
+import { delImages } from "../actions/imagesActions";
 import { fetchAvatars } from "../actions/avatarsActions";
 import RenderImage from "../Utils/RenderImage";
 
@@ -27,7 +28,8 @@ class Hotels extends Component {
     this.state = {
       hotel: null,
       selectedImgs: [],
-      files: []
+      files: [],
+      displayedImgs: []
     };
 
     this.save = this.save.bind(this);
@@ -35,6 +37,7 @@ class Hotels extends Component {
     this.onhotelselect = this.onhotelselect.bind(this);
     this.addNew = this.addNew.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
+    this.deleteImgs = this.deleteImgs.bind(this);
     this.upFile = React.createRef();
   }
   componentDidMount() {
@@ -105,8 +108,10 @@ class Hotels extends Component {
     this.newHotel = false;
     this.props.displayDialog(true);
     await this.setState({
-      hotel: Object.assign({}, e.data)
+      hotel: Object.assign({}, e.data),
+      displayedImgs: e.data.images
     });
+
     console.log(e, this.state.hotel.images);
   }
   addNew() {
@@ -164,9 +169,17 @@ class Hotels extends Component {
     } else tb = tb.filter(a => a !== e);
     this.setState({ selectedImgs: tb });
   };
-  deleteImgs = () => {
-    console.log(this.state.selectedImgs);
-  };
+  async deleteImgs() {
+    await this.props.delImages(
+      this.state.selectedImgs,
+      this.props.token,
+      this.props.location.state.town
+    );
+    let imgs = this.state.displayedImgs.filter(
+      e => !this.state.selectedImgs.includes(e.id)
+    );
+    this.setState({ selectedImgs: [], displayedImgs: imgs });
+  }
   render() {
     let footer = (
       <div
@@ -393,12 +406,20 @@ class Hotels extends Component {
 
                   <div
                     className="p-col-fixed"
-                    style={{ width: "400px", padding: ".75em" }}
+                    style={{
+                      width: "400px",
+                      padding: ".75em"
+                    }}
                   >
                     <label htmlFor="images">Images</label>
                     {!this.newHotel && (
-                      <div>
-                        {this.state.hotel.images.map(e => {
+                      <div
+                        style={{
+                          backgroundColor: "white",
+                          "border-radius": "1%"
+                        }}
+                      >
+                        {this.state.displayedImgs.map(e => {
                           return (
                             <RenderImage item={e} onClick={this.onImgClick} />
                           );
@@ -449,6 +470,9 @@ const mapDispatchToProps = dispatch => ({
   },
   delHotel: (idtown, id, token) => {
     dispatch(delHotel(idtown, id, token));
+  },
+  delImages: (data, token, idtown) => {
+    dispatch(delImages(data, token, idtown));
   },
   displayDialog: bool => {
     dispatch(displayDialog(bool));
