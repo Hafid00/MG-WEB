@@ -16,13 +16,17 @@ import {
   updPlace,
   delPlace
 } from "../actions/placesActions";
+import { delImages } from "../actions/imagesActions";
+import RenderImage from "../Utils/RenderImage";
 
 class Places extends Component {
   constructor() {
     super();
     this.state = {
       place: null,
-      files: []
+      selectedImgs: [],
+      files: [],
+      displayedImgs: []
     };
 
     this.save = this.save.bind(this);
@@ -30,6 +34,7 @@ class Places extends Component {
     this.onplaceSelect = this.onplaceSelect.bind(this);
     this.addNew = this.addNew.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
+    this.deleteImgs = this.deleteImgs.bind(this);
     this.upFile = React.createRef();
   }
   componentDidMount() {
@@ -69,7 +74,8 @@ class Places extends Component {
         this.props.location.state.town,
         this.state.place.id,
         Body,
-        this.props.token
+        this.props.token,
+        data
       );
     }
     this.props.displayDialog(true);
@@ -95,7 +101,8 @@ class Places extends Component {
     this.newPlace = false;
     this.props.displayDialog(true);
     this.setState({
-      place: Object.assign({}, e.data)
+      place: Object.assign({}, e.data),
+      displayedImgs: e.data.images
     });
     console.log(e);
   }
@@ -115,10 +122,6 @@ class Places extends Component {
     this.props.displayDialog(true);
   }
   onHideCallback = () => {
-    // this.upFile.current.state.files.map(d =>{ return {...d, objectURL: 'https://s3.eu-west-3.amazonaws.com/newbuckettrvl/1580859925140-index.jpeg'}});
-    // this.upFile.current.state.files[0].objectURL =
-    //   "https://s3.eu-west-3.amazonaws.com/newbuckettrvl/1580859925140-index.jpeg";
-
     if (this.state.files.length > 0) {
       this.setState({ files: [] });
     }
@@ -289,6 +292,20 @@ class Places extends Component {
                   </div>
                   <div className="p-col-4 mb-4" style={{ padding: ".75em" }}>
                     <label htmlFor="images">Images</label>
+                    {!this.newPlace && (
+                      <div
+                        style={{
+                          backgroundColor: "white",
+                          "border-radius": "1%"
+                        }}
+                      >
+                        {this.state.displayedImgs.map(e => {
+                          return (
+                            <RenderImage item={e} onClick={this.onImgClick} />
+                          );
+                        })}
+                      </div>
+                    )}
                     <br />
                     <FileUpload
                       ref={this.upFile}
@@ -324,11 +341,14 @@ const mapDispatchToProps = dispatch => ({
   addPlace: (idtown, data, token, dataImg) => {
     dispatch(addPlace(idtown, data, token, dataImg));
   },
-  updPlace: (idtown, id, data, token) => {
-    dispatch(updPlace(idtown, id, data, token));
+  updPlace: (idtown, id, data, token, dataImg) => {
+    dispatch(updPlace(idtown, id, data, token, dataImg));
   },
   delPlace: (idtown, id, token) => {
     dispatch(delPlace(idtown, id, token));
+  },
+  delImages: (data, token, idtown) => {
+    dispatch(delImages(data, token, idtown));
   },
   displayDialog: bool => {
     dispatch(displayDialog(bool));

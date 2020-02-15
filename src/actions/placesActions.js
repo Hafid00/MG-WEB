@@ -22,8 +22,8 @@ export function addPlace(idtown, data, token, dataImg) {
       .then(res => {
         console.log("res", res);
         if (res.data.success) {
-          dispatch(fetchPlaces(idtown));
           dispatch(addPlaceImages(dataImg, token, res.data.result));
+          dispatch(fetchPlaces(idtown));
           dispatch(displayDialog(false));
         }
       })
@@ -32,12 +32,13 @@ export function addPlace(idtown, data, token, dataImg) {
       });
   };
 }
-export function updPlace(idtown, id, data, token) {
+export function updPlace(idtown, id, data, token, dataImg) {
   return dispatch => {
     PlacesServices.updPlace(id, data, token)
       .then(res => {
         console.log("res", res);
         if (res.data.success) {
+          dispatch(addPlaceImages(dataImg, token, id));
           dispatch(fetchPlaces(idtown));
           dispatch(displayDialog(false));
         }

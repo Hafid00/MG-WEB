@@ -22,8 +22,8 @@ export function addRestaurant(idtown, data, token, dataImg) {
       .then(res => {
         console.log("res", res);
         if (res.data.success) {
-          dispatch(fetchRestaurants(idtown));
           dispatch(addRestauImages(dataImg, token, res.data.result));
+          dispatch(fetchRestaurants(idtown));
           dispatch(displayDialog(false));
         }
       })
@@ -32,12 +32,13 @@ export function addRestaurant(idtown, data, token, dataImg) {
       });
   };
 }
-export function updRestaurant(idtown, id, data, token) {
+export function updRestaurant(idtown, id, data, token, dataImg) {
   return dispatch => {
     RestaurantsServices.updRestaurant(id, data, token)
       .then(res => {
         console.log("res", res);
         if (res.data.success) {
+          dispatch(addRestauImages(dataImg, token, id));
           dispatch(fetchRestaurants(idtown));
           dispatch(displayDialog(false));
         }

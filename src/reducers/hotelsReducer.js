@@ -1,30 +1,20 @@
-import { FETCH_HOTELS, DISPLAY_DIALOG } from "../actions/types";
+import { FETCH_HOTELS, DISPLAY_DIALOG_HOTEL } from "../actions/types";
 
 const initialState = {
-    hotels: [],
-    displayDialog: false,
-  
-  };
+  hotels: [],
+  displayDialog: false
+};
 
+const hotels = (state = initialState, action) => {
+  switch (action.type) {
+    case FETCH_HOTELS:
+      return { ...state, hotels: action.hotels };
+    case DISPLAY_DIALOG_HOTEL:
+      return { ...state, displayDialog: action.bool };
 
+    default:
+      return state;
+  }
+};
 
-  const hotels = (state = initialState, action) => {
-
-    switch (action.type) {
-      case FETCH_HOTELS:
-        return{ ...state, hotels: action.hotels };
-      case DISPLAY_DIALOG:
-        return { ...state, displayDialog: action.bool}
-  
-      
-      default:
-  
-        return state;
-  
-    }
-  
-  };
-  
-  export default hotels;
-  
-  
+export default hotels;

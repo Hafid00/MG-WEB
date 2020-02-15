@@ -83,7 +83,7 @@ class Hotels extends Component {
         this.state.hotel.id,
         Body,
         this.props.token,
-        data,
+        data
       );
     }
     this.props.displayDialog(true);
@@ -134,10 +134,6 @@ class Hotels extends Component {
     this.props.displayDialog(true);
   }
   onHideCallback = () => {
-    // this.upFile.current.state.files.map(d =>{ return {...d, objectURL: 'https://s3.eu-west-3.amazonaws.com/newbuckettrvl/1580859925140-index.jpeg'}});
-    // this.upFile.current.state.files[0].objectURL =
-    //   "https://s3.eu-west-3.amazonaws.com/newbuckettrvl/1580859925140-index.jpeg";
-
     if (this.state.files.length > 0) {
       this.setState({ files: [], selectedImg: null });
     }
