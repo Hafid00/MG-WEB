@@ -71,7 +71,7 @@ export function fetchHotelsSuccess(hotels) {
 }
 export function displayDialog(bool) {
   return {
-    type: actionTypes.DISPLAY_DIALOG,
+    type: actionTypes.DISPLAY_DIALOG_HOTEL,
     bool
   };
 }
