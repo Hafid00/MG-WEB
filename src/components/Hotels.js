@@ -176,8 +176,9 @@ class Hotels extends Component {
       this.props.location.state.town
     );
     let imgs = this.state.displayedImgs.filter(
-      e => !this.state.selectedImgs.includes(e.id)
+      e => !this.state.selectedImgs.includes(e.id.toString())
     );
+
     this.setState({ selectedImgs: [], displayedImgs: imgs });
   }
   render() {
