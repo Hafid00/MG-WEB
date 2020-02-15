@@ -38,7 +38,7 @@ export function updHotel(idtown, id, data, token, newData) {
       .then(res => {
         console.log("res", res);
         if (res.data.success) {
-          dispatch(addHotelImages(newData, token, id))
+          dispatch(addHotelImages(newData, token, id));
           dispatch(fetchHotels(idtown));
           dispatch(displayDialog(false));
         }
@@ -71,7 +71,7 @@ export function fetchHotelsSuccess(hotels) {
 }
 export function displayDialog(bool) {
   return {
-    type: actionTypes.DISPLAY_DIALOG,
+    type: actionTypes.DISPLAY_DIALOG_HOTEL,
     bool
   };
 }

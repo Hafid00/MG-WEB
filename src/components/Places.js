@@ -9,6 +9,7 @@ import { Rating } from "primereact/rating";
 import { ScrollPanel } from "primereact/scrollpanel";
 import { InputTextarea } from "primereact/inputtextarea";
 import { FileUpload } from "primereact/fileupload";
+import { InputSwitch } from "primereact/inputswitch";
 import {
   fetchPlaces,
   addPlace,
@@ -59,6 +60,8 @@ class Places extends Component {
       description: this.state.place.description,
       latitude: this.state.place.latitude,
       longitude: this.state.place.longitude,
+      home: this.state.hotel.home,
+      city: this.props.location.state.tname,
       town: { id: this.props.location.state.town }
     };
     console.log(Body);
@@ -106,6 +109,18 @@ class Places extends Component {
     });
     console.log(e);
   }
+  async deleteImgs() {
+    await this.props.delImages(
+      this.state.selectedImgs,
+      this.props.token,
+      this.props.location.state.town
+    );
+    let imgs = this.state.displayedImgs.filter(
+      e => !this.state.selectedImgs.includes(e.id.toString())
+    );
+
+    this.setState({ selectedImgs: [], displayedImgs: imgs });
+  }
   addNew() {
     this.newPlace = true;
     this.setState({
@@ -116,7 +131,8 @@ class Places extends Component {
         type: "",
         description: "",
         latitude: "",
-        longitude: ""
+        longitude: "",
+        home: false
       }
     });
     this.props.displayDialog(true);
@@ -133,7 +149,9 @@ class Places extends Component {
   rateTemplate = rowData => {
     return <Rating value={rowData.rating} cancel={false} readonly={true} />;
   };
-
+  homeTemplate = rowData => {
+    return rowData.home ? "YES" : "NO";
+  };
   render() {
     let footer = (
       <div
@@ -156,6 +174,11 @@ class Places extends Component {
 
     let dialogFooter = (
       <div>
+        <Button
+          label="Delete photos"
+          icon="pi pi-trash"
+          onClick={this.deleteImgs}
+        />
         {!this.newPlace && (
           <Button label="Delete" icon="pi pi-times" onClick={this.delete} />
         )}
@@ -215,6 +238,13 @@ class Places extends Component {
               header="description"
               sortable={true}
               style={{ width: "250px" }}
+            />
+            <Column
+              field="On home"
+              header="On home"
+              sortable={true}
+              body={this.homeTemplate}
+              style={{ textAlign: "center", width: "150px" }}
             />
           </DataTable>
 
@@ -288,6 +318,18 @@ class Places extends Component {
                         this.updateProperty("description", e.target.value);
                       }}
                       value={this.state.place.description}
+                    />
+                  </div>
+                  <div style={{ padding: ".75em" }}>
+                    <label htmlFor="avatar">On home ?</label>
+                    <br />
+                    <InputSwitch
+                      onLabel="Yes"
+                      offLabel="No"
+                      checked={this.state.place.home}
+                      onChange={e => {
+                        this.updateProperty("home", e.value);
+                      }}
                     />
                   </div>
                   <div className="p-col-4 mb-4" style={{ padding: ".75em" }}>

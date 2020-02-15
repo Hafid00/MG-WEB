@@ -11,6 +11,7 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
 import { InputMask } from "primereact/inputmask";
+import { InputSwitch } from "primereact/inputswitch";
 import {
   fetchRestaurants,
   addRestaurant,
@@ -67,6 +68,8 @@ class Restaurants extends Component {
       description: this.state.restaurant.description,
       latitude: this.state.restaurant.latitude,
       longitude: this.state.restaurant.longitude,
+      home: this.state.hotel.home,
+      city: this.props.location.state.tname,
       town: { id: this.props.location.state.town }
     };
     console.log(Body);
@@ -127,7 +130,8 @@ class Restaurants extends Component {
         phone: "",
         description: "",
         latitude: "",
-        longitude: ""
+        longitude: "",
+        home: false
       }
     });
     this.props.displayDialog(true);
@@ -149,6 +153,9 @@ class Restaurants extends Component {
   };
   rateTemplate = rowData => {
     return <Rating value={rowData.rating} cancel={false} readonly={true} />;
+  };
+  homeTemplate = rowData => {
+    return rowData.home ? "YES" : "NO";
   };
 
   onImgClick = (e, p) => {
@@ -196,7 +203,7 @@ class Restaurants extends Component {
       <div>
         <Button
           label="Delete photos"
-          icon="pi-trash"
+          icon="pi pi-trash"
           onClick={this.deleteImgs}
         />
         {!this.newRestaurant && (
@@ -276,6 +283,13 @@ class Restaurants extends Component {
               sortable={true}
               body={this.avatarTemplate}
               style={{ textAlign: "center", width: "250px" }}
+            />
+            <Column
+              field="On home"
+              header="On home"
+              sortable={true}
+              body={this.homeTemplate}
+              style={{ textAlign: "center", width: "150px" }}
             />
           </DataTable>
 
@@ -393,7 +407,18 @@ class Restaurants extends Component {
                       placeholder="Select an Avatar"
                     />
                   </div>
-
+                  <div style={{ padding: ".75em" }}>
+                    <label htmlFor="avatar">On home ?</label>
+                    <br />
+                    <InputSwitch
+                      onLabel="Yes"
+                      offLabel="No"
+                      checked={this.state.restaurant.home}
+                      onChange={e => {
+                        this.updateProperty("home", e.value);
+                      }}
+                    />
+                  </div>
                   <div className="p-col-4 mb-4" style={{ padding: ".75em" }}>
                     <label htmlFor="images">Images</label>
                     {!this.newRestaurant && (

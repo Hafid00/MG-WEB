@@ -71,7 +71,7 @@ export function fetchRestaurantsSuccess(restaurants) {
 }
 export function displayDialog(bool) {
   return {
-    type: actionTypes.DISPLAY_DIALOG,
+    type: actionTypes.DISPLAY_DIALOG_RESTAURANT,
     bool
   };
 }

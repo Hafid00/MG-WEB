@@ -11,6 +11,7 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
 import { FileUpload } from "primereact/fileupload";
 import { InputMask } from "primereact/inputmask";
+import { InputSwitch } from "primereact/inputswitch";
 import {
   fetchHotels,
   addHotel,
@@ -66,6 +67,7 @@ class Hotels extends Component {
       description: this.state.hotel.description,
       latitude: this.state.hotel.latitude,
       longitude: this.state.hotel.longitude,
+      home: this.state.hotel.home,
       city: this.props.location.state.tname,
       town: { id: this.props.location.state.town }
     };
@@ -128,7 +130,8 @@ class Hotels extends Component {
         phone: "",
         description: "",
         latitude: "",
-        longitude: ""
+        longitude: "",
+        home: false
       }
     });
     this.props.displayDialog(true);
@@ -157,6 +160,9 @@ class Hotels extends Component {
   };
   rateTemplate = rowData => {
     return <Rating value={rowData.rating} cancel={false} readonly={true} />;
+  };
+  homeTemplate = rowData => {
+    return rowData.home ? "YES" : "NO";
   };
   onImgClick = (e, p) => {
     let tb = this.state.selectedImgs;
@@ -202,7 +208,7 @@ class Hotels extends Component {
       <div>
         <Button
           label="Delete photos"
-          icon="pi-trash"
+          icon="pi pi-trash"
           onClick={this.deleteImgs}
         />
         {!this.newHotel && (
@@ -284,6 +290,13 @@ class Hotels extends Component {
               sortable={true}
               body={this.avatarTemplate}
               style={{ textAlign: "center", width: "250px" }}
+            />
+            <Column
+              field="On home"
+              header="On home"
+              sortable={true}
+              body={this.homeTemplate}
+              style={{ textAlign: "center", width: "150px" }}
             />
           </DataTable>
 
@@ -402,6 +415,18 @@ class Hotels extends Component {
                     />
                   </div>
 
+                  <div style={{ padding: ".75em" }}>
+                    <label htmlFor="avatar">On home ?</label>
+                    <br />
+                    <InputSwitch
+                      onLabel="Yes"
+                      offLabel="No"
+                      checked={this.state.hotel.home}
+                      onChange={e => {
+                        this.updateProperty("home", e.value);
+                      }}
+                    />
+                  </div>
                   <div
                     className="p-col-fixed"
                     style={{
