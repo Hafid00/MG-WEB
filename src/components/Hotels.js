@@ -61,7 +61,7 @@ class Hotels extends Component {
       rating: this.state.hotel.rating,
       price: this.state.hotel.price,
       email: this.state.hotel.email,
-      avatar: this.state.hotel.avatar.code,
+      avatar: this.state.hotel.avatar ? this.state.hotel.avatar.code : null,
       phone: this.state.hotel.phone,
       description: this.state.hotel.description,
       latitude: this.state.hotel.latitude,
@@ -82,7 +82,8 @@ class Hotels extends Component {
         this.props.location.state.town,
         this.state.hotel.id,
         Body,
-        this.props.token
+        this.props.token,
+        data,
       );
     }
     this.props.displayDialog(true);
@@ -466,8 +467,8 @@ const mapDispatchToProps = dispatch => ({
   addHotel: (idtown, data, token, dataImg) => {
     dispatch(addHotel(idtown, data, token, dataImg));
   },
-  updHotel: (idtown, id, data, token) => {
-    dispatch(updHotel(idtown, id, data, token));
+  updHotel: (idtown, id, data, token, newData) => {
+    dispatch(updHotel(idtown, id, data, token, newData));
   },
   delHotel: (idtown, id, token) => {
     dispatch(delHotel(idtown, id, token));

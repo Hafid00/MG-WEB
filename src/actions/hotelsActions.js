@@ -32,12 +32,13 @@ export function addHotel(idtown, data, token, dataImg) {
       });
   };
 }
-export function updHotel(idtown, id, data, token) {
+export function updHotel(idtown, id, data, token, newData) {
   return dispatch => {
     HotelsServices.updHotel(id, data, token)
       .then(res => {
         console.log("res", res);
         if (res.data.success) {
+          dispatch(addHotelImages(newData, token, id))
           dispatch(fetchHotels(idtown));
           dispatch(displayDialog(false));
         }
