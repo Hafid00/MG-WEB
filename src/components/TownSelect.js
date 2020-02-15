@@ -6,7 +6,6 @@ import { fetchTowns } from "../actions/townsActions";
 import { Button } from "react-bootstrap";
 import { Dialog } from "primereact/dialog";
 import { displayDialog, addTown } from '../actions/townsActions';
-import { ScrollPanel } from "primereact/scrollpanel";
 import { InputText } from "primereact/inputtext";
 
 
