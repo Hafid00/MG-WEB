@@ -1,4 +1,4 @@
-import { FETCH_PLACES, DISPLAY_DIALOG } from "../actions/types";
+import { FETCH_PLACES, DISPLAY_DIALOG_PLACE } from "../actions/types";
 const initialState = {
   places: [],
   displayDialog: false
@@ -10,7 +10,7 @@ const places = (state = initialState, action) => {
       console.log("res");
 
       return { ...state, places: action.places };
-    case DISPLAY_DIALOG:
+    case DISPLAY_DIALOG_PLACE:
       return { ...state, displayDialog: action.bool };
 
     default:

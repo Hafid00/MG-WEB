@@ -18,14 +18,18 @@ import {
   updRestaurant,
   delRestaurant
 } from "../actions/restaurantsActions";
+import { delImages } from "../actions/imagesActions";
 import { fetchAvatars } from "../actions/avatarsActions";
+import RenderImage from "../Utils/RenderImage";
 
 class Restaurants extends Component {
   constructor() {
     super();
     this.state = {
       restaurant: null,
-      files: []
+      selectedImgs: [],
+      files: [],
+      displayedImgs: []
     };
 
     this.save = this.save.bind(this);
@@ -33,6 +37,7 @@ class Restaurants extends Component {
     this.onrestaurantselect = this.onrestaurantselect.bind(this);
     this.addNew = this.addNew.bind(this);
     this.onFileChange = this.onFileChange.bind(this);
+    this.deleteImgs = this.deleteImgs.bind(this);
     this.upFile = React.createRef();
   }
   componentDidMount() {
@@ -77,7 +82,8 @@ class Restaurants extends Component {
         this.props.location.state.town,
         this.state.restaurant.id,
         Body,
-        this.props.token
+        this.props.token,
+        data
       );
     }
     this.props.displayDialog(true);
@@ -103,7 +109,8 @@ class Restaurants extends Component {
     this.newRestaurant = false;
     this.props.displayDialog(true);
     this.setState({
-      restaurant: Object.assign({}, e.data)
+      restaurant: Object.assign({}, e.data),
+      displayedImgs: e.data.images
     });
     console.log(e);
   }
@@ -126,10 +133,6 @@ class Restaurants extends Component {
     this.props.displayDialog(true);
   }
   onHideCallback = () => {
-    // this.upFile.current.state.files.map(d =>{ return {...d, objectURL: 'https://s3.eu-west-3.amazonaws.com/newbuckettrvl/1580859925140-index.jpeg'}});
-    // this.upFile.current.state.files[0].objectURL =
-    //   "https://s3.eu-west-3.amazonaws.com/newbuckettrvl/1580859925140-index.jpeg";
-
     if (this.state.files.length > 0) {
       this.setState({ files: [] });
     }
@@ -147,6 +150,27 @@ class Restaurants extends Component {
   rateTemplate = rowData => {
     return <Rating value={rowData.rating} cancel={false} readonly={true} />;
   };
+
+  onImgClick = (e, p) => {
+    let tb = this.state.selectedImgs;
+    console.log(e, p);
+    if (!p) {
+      tb.push(e);
+    } else tb = tb.filter(a => a !== e);
+    this.setState({ selectedImgs: tb });
+  };
+  async deleteImgs() {
+    await this.props.delImages(
+      this.state.selectedImgs,
+      this.props.token,
+      this.props.location.state.town
+    );
+    let imgs = this.state.displayedImgs.filter(
+      e => !this.state.selectedImgs.includes(e.id.toString())
+    );
+
+    this.setState({ selectedImgs: [], displayedImgs: imgs });
+  }
 
   render() {
     let footer = (
@@ -170,6 +194,11 @@ class Restaurants extends Component {
 
     let dialogFooter = (
       <div>
+        <Button
+          label="Delete photos"
+          icon="pi-trash"
+          onClick={this.deleteImgs}
+        />
         {!this.newRestaurant && (
           <Button label="Delete" icon="pi pi-times" onClick={this.delete} />
         )}
@@ -367,6 +396,20 @@ class Restaurants extends Component {
 
                   <div className="p-col-4 mb-4" style={{ padding: ".75em" }}>
                     <label htmlFor="images">Images</label>
+                    {!this.newRestaurant && (
+                      <div
+                        style={{
+                          backgroundColor: "white",
+                          "border-radius": "1%"
+                        }}
+                      >
+                        {this.state.displayedImgs.map(e => {
+                          return (
+                            <RenderImage item={e} onClick={this.onImgClick} />
+                          );
+                        })}
+                      </div>
+                    )}
                     <br />
                     <FileUpload
                       ref={this.upFile}
@@ -406,11 +449,14 @@ const mapDispatchToProps = dispatch => ({
   addRestaurant: (idtown, data, token, dataImg) => {
     dispatch(addRestaurant(idtown, data, token, dataImg));
   },
-  updRestaurant: (idtown, id, data, token) => {
-    dispatch(updRestaurant(idtown, id, data, token));
+  updRestaurant: (idtown, id, data, token, dataImg) => {
+    dispatch(updRestaurant(idtown, id, data, token, dataImg));
   },
   delRestaurant: (idtown, id, token) => {
     dispatch(delRestaurant(idtown, id, token));
+  },
+  delImages: (data, token, idtown) => {
+    dispatch(delImages(data, token, idtown));
   },
   displayDialog: bool => {
     dispatch(displayDialog(bool));
