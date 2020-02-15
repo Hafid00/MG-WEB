@@ -71,7 +71,7 @@ export function fetchPlacesSuccess(places) {
 }
 export function displayDialog(bool) {
   return {
-    type: actionTypes.DISPLAY_DIALOG_PLACE,
+    type: actionTypes.DISPLAY_DIALOG,
     bool
   };
 }
