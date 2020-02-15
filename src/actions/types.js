@@ -4,6 +4,9 @@ export const DISPLAY_DIALOG_HOTEL = "DISPLAY_DIALOG_HOTEL";
 // Towns Apis
 export const FETCH_TOWNS = "FETCH_TOWNS";
 export const FETCH_TOWNS_SELECT = "FETCH_TOWNS_SELECT";
+export const ADD_TOWN = "ADD_TOWN";
+export const DISPLAY_DIALOG_TOWNS = "DISPLAY_DIALOG_TOWNS";
+
 // Places Apis
 export const FETCH_PLACES = "FETCH_PLACES";
 export const DISPLAY_DIALOG_PLACE = "DISPLAY_DIALOG_PLACE";
